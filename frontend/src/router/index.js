@@ -1,20 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "User Login" */ '../views/LoginView.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/register',
+    name: 'Register',
+    component: () => import(/* webpackChunkName: "User Registration" */ '../views/RegisterView.vue')
+  },
+  {
+    path: '/chat',
+    component: () => import(/* webpackChunkName: "Medical Assistant" */ '../views/MedicalAssistantView.vue'),
+    children: [
+      {
+        path: 'new',
+        name: 'NewChat',
+        component: () => import(/* webpackChunkName: "Medical Assistant" */ '../views/MedicalAssistantView.vue'),
+        props: { isNew: true }
+      },
+      {
+        path: ':chatId',
+        name: 'ChatById',
+        component: () => import(/* webpackChunkName: "Medical Assistant" */ '../views/MedicalAssistantView.vue'),
+        props: true
+      }
+    ]
+  },
+  // fallback or redirect
+  { path: '/:pathMatch(.*)*', redirect: '/chat/new' },
+
 ]
 
 const router = createRouter({
