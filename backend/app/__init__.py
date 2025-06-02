@@ -63,9 +63,9 @@ def create_app():
             
             
     
-    from app.api import assignment, auth, course, user, week,lecture
+    from app.api import  auth, chats
     app.register_blueprint(auth.auth_bp, url_prefix='/auth')
-   
+    app.register_blueprint(chats.chats_bp,url_prefix='/chats')
 
     setup_migrations(app)
     return app
