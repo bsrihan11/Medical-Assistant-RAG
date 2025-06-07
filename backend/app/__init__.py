@@ -8,7 +8,6 @@ from flask_jwt_extended import JWTManager
 
 
 
-
 db = SQLAlchemy()
 migrate_db = Migrate()
 jwt = JWTManager()
@@ -45,17 +44,17 @@ def setup_migrations(app):
 def create_app():
     """Initialize the Flask App."""
 
-    app = Flask(__name__)
-    app.config.from_object('app.config.Config')
+    flask_app = Flask(__name__)
+    flask_app.config.from_object('app.config.AppConfig')
 
    
-    db.init_app(app)
-    jwt.init_app(app)
-    migrate_db.init_app(app, db)
+    db.init_app(flask_app)
+    jwt.init_app(flask_app)
+    migrate_db.init_app(flask_app, db)
     
-    path = Path(os.getcwd(),'instance','app.db')
+    path = Path(os.getcwd(),'instance','rag.db')
     if not path.exists():
-        with app.app_context():
+        with flask_app.app_context():
             import app.models
             db.create_all()
 
@@ -63,9 +62,14 @@ def create_app():
             
             
     
-    from app.api import  auth, chats
-    app.register_blueprint(auth.auth_bp, url_prefix='/auth')
-    app.register_blueprint(chats.chats_bp,url_prefix='/chats')
+    from app.api import  auth, chats, user
+    flask_app.register_blueprint(auth.auth_bp, url_prefix='/auth')
+    flask_app.register_blueprint(chats.chats_bp,url_prefix='/chat')
+    flask_app.register_blueprint(user.user_bp, url_prefix='/user')
 
-    setup_migrations(app)
-    return app
+    setup_migrations(flask_app)
+    return flask_app
+
+
+
+    
