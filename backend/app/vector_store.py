@@ -1,7 +1,7 @@
 from langchain_community.vectorstores import FAISS
 import os
 from langchain_mistralai import MistralAIEmbeddings
-
+from app.log import logger
 
 
 def load_vector_store():
@@ -19,7 +19,9 @@ def load_vector_store():
     EMBEDDINGS_DIR = os.path.join(ROOT_DIR, "vector DB", "embeddings")
     
     if not os.path.exists(EMBEDDINGS_DIR):
-        raise FileNotFoundError(f"Embeddings directory '{EMBEDDINGS_DIR}' does not exist. Please create it first.")
+        error_msg = f"Embeddings directory '{EMBEDDINGS_DIR}' does not exist. Please create it first."
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
     
     index_path = os.path.join(EMBEDDINGS_DIR, "index.faiss")
     config_path = os.path.join(EMBEDDINGS_DIR, "index.pkl")
@@ -37,10 +39,11 @@ def load_vector_store():
             allow_dangerous_deserialization=True
         )
         
-        print("✅ FAISS vector store loaded from disk.")
+        logger.info("✅ FAISS vector store loaded from disk.")
         return vector_store
     else:
-        raise FileNotFoundError(
-            f"FAISS index files not found in '{EMBEDDINGS_DIR}'. "
-            "Please ensure the vector store is created first."
-        )
+        error_msg = f"FAISS index files not found in '{EMBEDDINGS_DIR}'. Please ensure the vector store is created first."
+        
+        logger.error(error_msg)
+        
+        raise FileNotFoundError(error_msg)

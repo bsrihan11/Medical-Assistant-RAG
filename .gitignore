@@ -9,4 +9,5 @@ backend/venv/
 
 
 # Embedding files
-/vector DB/embeddings/
+/vector DB/embeddings/index.faiss
+/vector DB/embeddings/index.pkl

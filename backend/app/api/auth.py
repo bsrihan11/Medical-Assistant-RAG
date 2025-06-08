@@ -16,6 +16,14 @@ auth_bp = Blueprint('auth', __name__)
 class LoginAPI(MethodView):
 
     def post(self):
+        """
+        Handle user login by verifying the email and issuing JWT access and refresh tokens.
+
+        Returns:
+            JSON response with success message and sets access/refresh cookies if valid,
+            or an error message if credentials are invalid.
+        """
+        
         data = request.get_json()
 
         if not validate_email(data.get('email','')):
@@ -43,8 +51,19 @@ class LogoutAPI(MethodView):
     
     @jwt_required(verify_type=False)
     def post(self):
+        """
+        Handle user logout by unsetting JWT cookies.
+
+        Requires:
+            A valid JWT (access or refresh) in the request cookies.
+
+        Returns:
+            JSON response confirming logout and clears authentication cookies.
+        """
+
         response = jsonify(message="Logout successful")
         unset_jwt_cookies(response)
+        
         return response,200
         
   
@@ -53,6 +72,16 @@ class RefreshAPI(MethodView):
     
     @jwt_required(refresh=True)
     def post(self):
+        """
+        Refresh the access token using a valid refresh token.
+
+        Requires:
+            A valid JWT refresh token in the request cookies.
+
+        Returns:
+            JSON response with a new access token set in cookies,
+            or an error if the user is invalid.
+        """
         
         user_id = get_jwt_identity()
         user = User.query.get(user_id)

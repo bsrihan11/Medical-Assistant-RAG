@@ -4,11 +4,7 @@ import time
 from langchain_mistralai import MistralAIEmbeddings
 from app.config import RagConfig
 from app.vector_store import load_vector_store
-import logging
-
-
-logger = logging.getLogger(__name__)
-
+from app.log import logger
 
 class RagLLM(ChatMistralAI):
     """A custom LLM class for Mistral AI with rate limiting and retry logic."""
@@ -43,8 +39,11 @@ class RagLLM(ChatMistralAI):
                 wait_time = (2 ** (attempt+1)) * 0.5
                 
                 time.sleep(wait_time)
-                
-        raise RuntimeError("❌ Failed to invoke LLM after multiple retries. Please check your LLM subscription for more details.")
+        
+        error_msg = f"❌ Failed to invoke LLM after multiple retries. Please check your LLM subscription for more details."        
+        logger.error(error_msg, exc_info=True)
+        
+        raise RuntimeError(error_msg)
 
 
 
@@ -98,5 +97,7 @@ def initialize_rag_pipeline():
         return llm_model, embedding_model, vector_store, retriever
 
     except Exception as e:
-        logger.error(f"Failed to initialize RAG pipeline: {e}", exc_info=True)
-        raise RuntimeError(f"❌ Failed to initialize RAG pipeline: {e}")
+        error_msg = f"❌ Failed to initialize RAG pipeline: {e}"
+        
+        logger.error(error_msg , exc_info=True)
+        raise RuntimeError(error_msg)

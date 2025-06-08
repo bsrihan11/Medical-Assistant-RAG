@@ -1,4 +1,5 @@
 from langchain_community.document_loaders import PyPDFLoader
+from vector_ops import logger
 import os
 
 def load_documents():
@@ -9,7 +10,9 @@ def load_documents():
     PDF_FILENAME = 'The-Gale-Encyclopedia-of-Medicine-3rd-Edition-staibabussalamsula.ac_.id_.pdf'
     
     if not os.path.exists(os.path.join(DOCUMENTS_DIR, PDF_FILENAME)): 
-        raise FileNotFoundError(f"PDF file '{PDF_FILENAME}' not found in {DOCUMENTS_DIR}")
+        path_msg = f"PDF file '{PDF_FILENAME}' not found in {DOCUMENTS_DIR}"
+        logger.error(path_msg)
+        raise FileNotFoundError(path_msg)
     
     
     pdf_path = os.path.join(DOCUMENTS_DIR, PDF_FILENAME)
