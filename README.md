@@ -111,7 +111,7 @@ The assistant combines various memory components and retrieval logic to generate
 | POST   | `/chat/{chat_id}`         | Submit query & get assistant reply |
 
 ---
-C:\Medical Assistant RAG\frontend\src\views\MedicalAssistantView.vue
+
 ## Frontend Routes
 
 | Route             | Component/View             | Description             |
@@ -156,3 +156,4 @@ npm run serve
 ```
 
 
+![Architecture Diagram](https://github.com/bsrihan11/Medical-Assistant-RAG/blob/main/images/RAG_1.png)
