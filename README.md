@@ -23,8 +23,6 @@ The assistant combines various memory components and retrieval logic to generate
 - **Chat History**: Combines long-term and short-term memory
 - **Vector Store**: Stores embedded document chunks from the knowledge base
 - **LLM (Mistral AI)**: Generates final response
-- **Frontend**: Built with Vue
-- **Backend**: Built with Flask
 
 ---
 
