@@ -87,6 +87,7 @@ The assistant combines various memory components and retrieval logic to generate
 
 ## Class Diagram
 
+![Architecture Diagram](https://github.com/bsrihan11/Medical-Assistant-RAG/blob/main/images/CLASS_DIAGRAM.jpg)
 
 ---
 
