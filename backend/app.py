@@ -1,8 +1,8 @@
 from app import create_app, db
-from flask_cors import CORS
+# from flask_cors import CORS
 
 app = create_app()
-CORS(app, origins=["http://localhost:8080"], supports_credentials=True)
+# CORS(app, origins=["http://localhost:8080"], supports_credentials=True)
 
 
 

@@ -22,7 +22,7 @@ class User(db.Model):
             'id': self.id,
             'name': self.name,
             'email': self.email,
-            'chats': [chat.to_json(basic=True) for chat in self.chats]
+            'chats': sorted([chat.to_json(basic=True) for chat in self.chats], key=lambda x: x['chat_id'], reverse=True)
         }
 
 
@@ -47,12 +47,12 @@ class Chat(db.Model):
         
         data = {
             'chat_id': self.id,
-            'user_id': self.user_id,
+            
             'title': self.title,
         }
         if not basic:
             data['messages'] = [m.to_json() for m in self.messages]
-            data['long_term_memory'] = [ltm.to_json() for ltm in self.long_term_memories]
+            
         return data
 
 
@@ -75,7 +75,7 @@ class ShortTermMemory(db.Model):
     def to_json(self):
         
         return {
-            'id': self.id,
+            'message_id': self.id,
             'question': self.question,
             'answer': self.answer
         }
@@ -98,6 +98,22 @@ class LongTermMemory(db.Model):
     def to_json(self):
         
         return {
-            'id': self.id,
+            'summary_id': self.id,
             'summary': self.summary
         }
+
+
+# {
+#     'chat_id': chat_id,
+#     'user_id': user_id,
+#     'title': title,
+#     'messages': [
+#         {
+#             'message_id': message_id,
+#             'question': question,
+#             'answer': answer
+#         }
+#     ]
+# }
+        
+            

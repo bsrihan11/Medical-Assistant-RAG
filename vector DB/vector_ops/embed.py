@@ -81,7 +81,7 @@ def create_vector_store(embedding_model, batch_size=50):
         logger.error(error_msg)
         
          
-        return None
+        raise RuntimeError(error_msg) from e
 
 
 

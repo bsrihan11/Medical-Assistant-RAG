@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate, init, upgrade, migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-
+from flask_cors import CORS
 
 
 db = SQLAlchemy()
@@ -60,8 +60,8 @@ def create_app():
 
             db.session.commit()
             
-            
-    
+    CORS(flask_app, origins=["http://localhost:8080"], supports_credentials=True)
+        
     from app.api import  auth, chats, user
     flask_app.register_blueprint(auth.auth_bp, url_prefix='/auth')
     flask_app.register_blueprint(chats.chats_bp,url_prefix='/chat')

@@ -2,8 +2,8 @@ from flask import Blueprint
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app import db
-from app.rag import generate_summary, get_rag_reply, get_title
-from app.models import User, Chat, ShortTermMemory, LongTermMemory
+from app.rag import generate_summary, get_rag_reply_v2, get_title
+from app.models import  Chat, ShortTermMemory, LongTermMemory
 
 
 chats_bp = Blueprint('chats', __name__)
@@ -45,7 +45,7 @@ def create_chat():
     db.session.add(c)
     db.session.commit()
     
-    rag_output = get_rag_reply(query, [], "")
+    rag_output = get_rag_reply_v2(query, c)
     
     
     message = ShortTermMemory(chat_id = c.id, question = query, answer = rag_output)
@@ -68,9 +68,7 @@ def llm_chat(chat_id):
 
         POST:
             - Accepts a new user query.
-            - Uses last 2 messages and long-term memory to generate a response.
-            - Stores query-response pair in short-term memory.
-            - Updates long-term memory if message count exceeds 2.
+            - Uses both Short Term and Long Term Memory along with previous messages of this Chat thread to answer.
 
     Expects:
         JSON body with a 'query' field (for POST).
@@ -92,30 +90,17 @@ def llm_chat(chat_id):
     if not query:
         return jsonify({'error': 'Query is required'}), 400
 
-    # Short-term memory: last 2 messages
-    all_messages = ShortTermMemory.query.filter_by(chat_id=chat_id).all()
-    recent_messages = all_messages[-2:]
-
-    # Long-term memory (if exists)
-    long_term_summary = LongTermMemory.query.filter_by(chat_id=chat_id).first()
-    summary_text = long_term_summary.summary if long_term_summary else ""
-
-    # Get RAG-based response
-    answer = get_rag_reply(query, recent_messages, summary_text)
+    
+    answer = get_rag_reply_v2(query, chat)
 
     # Store in short-term memory
     message = ShortTermMemory(chat_id=chat_id, question=query, answer=answer)
     db.session.add(message)
     db.session.commit()
-
+    
     # Update long-term memory if more than 2 messages
-    if len(all_messages) + 1 > 2:
-        updated_summary = generate_summary(recent_messages + [message])
-        if long_term_summary:
-            long_term_summary.summary = updated_summary
-        else:
-            db.session.add(LongTermMemory(chat_id=chat_id, summary=updated_summary))
-        db.session.commit()
+    if len(chat.messages) > 3:
+        updated_summary = generate_summary(chat)
 
     return jsonify(message.to_json()), 200
 
