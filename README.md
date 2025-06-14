@@ -155,5 +155,10 @@ npm install
 npm run serve
 ```
 
+---
+
+## Project Snippets
 
 ![Architecture Diagram](https://github.com/bsrihan11/Medical-Assistant-RAG/blob/main/images/RAG_1.png)
+
+![Architecture Diagram](https://github.com/bsrihan11/Medical-Assistant-RAG/blob/main/images/RAG_2.png)
